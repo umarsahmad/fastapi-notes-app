@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        form input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        li span {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Todo List App</h1>
+        <form id="add-item-form" action="/" method="post">
+            <input type="text" name="id" placeholder="ID" required>
+            <input type="text" name="desc" placeholder="Description" required>
+            <button type="submit">Add Item</button>
+        </form>
+        <!-- <ul id="todo-list"></ul> -->
+
+        <ul>
+            {% for doc in docs %}
+            <li>{{doc.id}} : &nbsp; {{ doc.desc }}
+
+                <form action="/del" method="post">
+                    <button type="submit" name="{{doc.id}}">Delete Item</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        form input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        li span {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Todo List App</h1>
+        <form id="add-item-form">
+            <input type="text" id="id" placeholder="ID" required>
+            <input type="text" id="desc" placeholder="Description" required>
+            <button type="submit">Add Item</button>
+        </form>
+        <ul id="todo-list"></ul>
+    </div>
+
+    <script>
+        // Sample data for initial display
+        // const todoItems = [
+        //     { id: 1, desc: "Finish homework" },
+        //     { id: 2, desc: "Buy groceries" }
+        // ];
+
+
+        // Display list function
+        fetch('http://localhost:8000/list/')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+
+                const todoList = document.getElementById('todo-list');
+                todoList.innerHTML = '';
+                
+                data.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>ID:</span> ${item.id} - <span>Description:</span> ${item.desc}`;
+                todoList.appendChild(li);
+
+            });
+
+            })
+            .catch(error => console.error('Error:', error));
+
+
+        // Function to handle form submission
+        function addItem(event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('id').value);
+            const desc = document.getElementById('desc').value;
+            if (!isNaN(id) && desc.trim() !== '') {
+                const newItem = { 'id': id, 'desc': desc };
+                fetch('http://localhost:8000/list', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newItem)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // If the POST request is successful, clear the input fields
+                        document.getElementById('id').value = '';
+                        document.getElementById('desc').value = '';
+                    } else {
+                        throw new Error('Failed to add item');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to add item. Please try again.');
+                });
+            } else {
+                alert('Please enter a valid ID and description.');
+            }
+        }
+
+        // Attach event listener to form submission
+        document.getElementById('add-item-form').addEventListener('submit', addItem);
+
+        
+    </script>
+</body>
+</html>
